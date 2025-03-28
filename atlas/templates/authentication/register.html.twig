@@ -5,6 +5,106 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('templates/security/register.css') }}">
+    <style>
+        /* Logo size adjustment */
+        .logo {
+            max-width: 100px;
+            height: auto;
+        }
+
+        /* Form layout fixes */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+        .input-container input,
+        .form-control {
+            width: 100%;
+            min-width: 0;
+        }
+
+        /* Password requirements styling */
+        :root {
+            --success-color: #28a745;
+            --light-text: #64748b;
+        }
+        
+        .password-requirements {
+            background-color: #f8fafc;
+            padding: 0.35rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.7rem;
+            width: 100%;
+        }
+
+        .password-requirements strong {
+            color: #4a5568;
+            margin-right: 0.5rem;
+        }
+
+        .password-requirements ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: inline;
+        }
+
+        .password-requirements li {
+            display: inline;
+            color: var(--light-text);
+            margin-right: 0.75rem;
+        }
+
+        .password-requirements li::before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 0.25rem;
+        }
+
+        /* Password row specific styling */
+        .password-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        
+            position: relative;
+        }
+
+        .password-row .form-group {
+            margin-bottom: 0;
+        }
+
+        .password-requirements {
+            grid-column: 1 / -1;
+            background-color: #f8fafc;
+            padding: 0.35rem 0.5rem;
+            border-radius: 4px;
+            margin: 0.25rem 0;
+            border: 1px solid #e2e8f0;
+            font-size: 0.7rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Remove duplicate styles */
+        .password-row .password-requirements {
+            grid-column: 1 / -1;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -24,17 +124,17 @@
     
     <!-- Right side - Registration form -->
     <div class="right-side">
-        <div>
+        <div style="margin-bottom: 0.5rem;">
             <img src="{{ asset('assets/ATLAS_LOGO.png') }}" alt="Atlas Logo" class="logo">
         </div>
         
-        <div class="mb-2">
+        <div style="margin-bottom: 0.25rem;">
             <h1 class="welcome-heading">WELCOME ABOARD</h1>
-            <p class="text-secondary">Let's start your journey with us</p>
+            <p class="text-secondary" style="margin-top: 2px; margin-bottom: 5px;">Let's start your journey with us</p>
         </div>
         
-        <div class="mb-2 text-center">
-            <p class="small">Already have an account? <a href="{{ path('app_login') }}" class="text-decoration-none fw-bold">Sign in here</a></p>
+        <div style="margin-bottom: 1.5rem;" class="text-center">
+            <p class="small" style="margin: 0;">Already have an account? <a href="{{ path('app_login') }}" class="text-decoration-none fw-bold">Sign in here</a></p>
         </div>
         
         {{ form_start(form, {'attr': {'class': 'mb-2', 'id': 'register-form', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
@@ -128,7 +228,7 @@
                 </div>
             </div>
 
-            <div class="form-row">
+            <div class="password-row">
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-text">
@@ -155,6 +255,16 @@
                             {{- form_errors(form.password)|striptags -}}
                         {%- endif -%}
                     </div>
+                </div>
+
+                <div class="password-requirements">
+                    <strong>Requirements:</strong>
+                    <ul>
+                        <li id="reg-length">8+ chars</li>
+                        <li id="reg-uppercase">1 uppercase</li>
+                        <li id="reg-number">1 number</li>
+                        <li id="reg-special">1 special</li>
+                    </ul>
                 </div>
             </div>
             
@@ -190,6 +300,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const profileImageInput = document.getElementById('{{ form.profile_image.vars.id }}');
             const fileNameDisplay = document.getElementById('file-name');
+            const passwordInputId = '{{ form.password.first.vars.id }}';
+            const passwordInput = document.getElementById(passwordInputId);
             
             // Handle file name display
             if (profileImageInput && fileNameDisplay) {
@@ -200,6 +312,37 @@
                         fileNameDisplay.textContent = 'No file selected';
                     }
                 });
+            }
+
+            // Real-time password requirements check
+            if (passwordInput) {
+                const requirements = [
+                    { id: 'reg-length',    test: (p) => p.length >= 8 },
+                    { id: 'reg-uppercase', test: (p) => /[A-Z]/.test(p) },
+                    { id: 'reg-number',    test: (p) => /[0-9]/.test(p) },
+                    { id: 'reg-special',   test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p) } // Expanded special chars
+                ];
+
+                const validatePassword = (password) => {
+                    requirements.forEach(req => {
+                        const element = document.getElementById(req.id);
+                        if (element) {
+                            element.style.color = req.test(password) ? 'var(--success-color)' : 'var(--light-text)';
+                        } else {
+                            console.error(`Requirement element with ID ${req.id} not found.`); // Added for debugging
+                        }
+                    });
+                };
+
+                passwordInput.addEventListener('input', function(e) {
+                    validatePassword(e.target.value);
+                });
+
+                // Initial validation check in case of browser autofill
+                validatePassword(passwordInput.value); 
+
+            } else {
+                console.error(`Password input element with ID ${passwordInputId} not found.`); // Added for debugging
             }
         });
     </script>
