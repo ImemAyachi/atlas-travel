@@ -40,4 +40,30 @@ class EmailVerificationRepository extends ServiceEntityRepository
 
         $qb->getQuery()->execute();
     }
+
+    /**
+     * Find all expired verification tokens
+     */
+    public function findExpired(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.expiresAt < :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Delete expired verification tokens
+     * @return int Number of deleted tokens
+     */
+    public function deleteExpired(): int
+    {
+        return $this->createQueryBuilder('v')
+            ->delete()
+            ->where('v.expiresAt < :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->getQuery()
+            ->execute();
+    }
 } 
