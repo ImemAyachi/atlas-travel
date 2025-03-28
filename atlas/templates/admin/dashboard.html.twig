@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard - Atlas{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('templates/admin/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="admin-dashboard">
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="welcome-message">Welcome, {{ app.user.firstname }} {{ app.user.lastname }}</h1>
+            <p class="text-muted">We're glad to see you back</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="info-title">Current Time</div>
+                    <div class="info-value">{{ "now"|date("F d, Y - h:i a") }}</div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="info-title">Your Role</div>
+                    <div class="info-value">
+                        <span class="role-badge">Admin</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="info-title">Account Status</div>
+                    <div class="info-value">
+                        <span class="role-badge badge-success">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-5">
+            <h5 class="mb-4">Quick Actions</h5>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ path('app_home') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-home me-2"></i> Home
+                </a>
+                <a href="#" class="btn btn-outline-primary">
+                    <i class="fas fa-users me-2"></i> Manage Users
+                </a>
+                <a href="#" class="btn btn-outline-primary">
+                    <i class="fas fa-cog me-2"></i> Settings
+                </a>
+                <a href="{{ path('app_logout') }}" class="btn btn-outline-danger">
+                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

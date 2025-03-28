@@ -1,0 +1,88 @@
+.admin-dashboard {
+    padding: 40px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.dashboard-header {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-left: 5px solid #0063be;
+}
+
+.welcome-message {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.info-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.info-title {
+    font-size: 14px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.info-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background-color: #0063be;
+    color: white;
+    border-radius: 30px;
+    font-weight: 500;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 99, 190, 0.3);
+}
+
+.badge-success {
+    background-color: #28a745;
+}
+
+.btn-outline-primary {
+    color: #0063be;
+    border-color: #0063be;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0063be;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .admin-dashboard {
+        padding: 20px;
+    }
+    
+    .dashboard-header {
+        padding: 15px;
+    }
+    
+    .welcome-message {
+        font-size: 20px;
+    }
+} 

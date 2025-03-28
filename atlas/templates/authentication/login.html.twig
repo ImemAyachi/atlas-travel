@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - Atlas{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('templates/security/login.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token('authenticate') }}">
+{% endblock %}
+
+{% block body %}
+<div class="row-container">
+    <!-- Left side - Login form -->
+    <div class="left-side">
+        <div>
+            <img src="{{ asset('assets/ATLAS_LOGO.png') }}" alt="Atlas Logo" class="logo">
+        </div>
+        
+        <div class="mb-3">
+            <h1 class="welcome-heading">Welcome Back</h1>
+            <p class="text-secondary">Let's continue exploring the world together</p>
+        </div>
+        
+        {{ form_start(form, {'attr': {'class': 'mb-3', 'id': 'login-form', 'novalidate': 'novalidate'}}) }}
+            <div class="form-group mb-2">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control' ~ ((not form.email.vars.valid or fieldErrors['email'] is defined) ? ' input-error' : '')}}) }}
+                </div>
+                <div class="error-message{% if not form.email.vars.valid or fieldErrors['email'] is defined %} visible{% endif %}">
+                    {%- if not form.email.vars.valid -%}
+                        {{- form_errors(form.email)|striptags -}}
+                    {%- elseif fieldErrors['email'] is defined -%}
+                        {{- fieldErrors['email'] -}}
+                    {%- endif -%}
+                </div>
+            </div>
+            
+            <div class="form-group mb-2">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    {{ form_widget(form.password, {'attr': {'class': 'form-control' ~ ((not form.password.vars.valid or fieldErrors['password'] is defined) ? ' input-error' : '')}}) }}
+                </div>
+                <div class="error-message{% if not form.password.vars.valid or fieldErrors['password'] is defined %} visible{% endif %}">
+                    {%- if not form.password.vars.valid -%}
+                        {{- form_errors(form.password)|striptags -}}
+                    {%- elseif fieldErrors['password'] is defined -%}
+                        {{- fieldErrors['password'] -}}
+                    {%- endif -%}
+                </div>
+            </div>
+            
+            <button class="btn btn-signin mb-2" type="submit">Sign In</button>
+            <div class="text-center">
+                <a href="#" class="text-decoration-none forgot-link">Forgot password?</a>
+            </div>
+            
+            <div class="text-center mb-2">
+                <p class="small">Don't have an account? <a href="{{ path('app_register') }}" class="text-decoration-none fw-bold">Sign up</a></p>
+                <p class="small">or continue with</p>
+                <div id="google-signin-btn" class="google-btn"></div>
+            </div>
+        {{ form_end(form) }}
+        
+        <div class="footer-text">
+            <p class="text-secondary small mb-0">Terms of service</p>
+        </div>
+    </div>
+    
+    <!-- Right side - Background image -->
+    <div class="right-side">
+        <div class="atlas-brand">
+            ATLAS
+        </div>
+        
+        <div class="bottom-content">
+            <p class="tagline">Plan your dream vacation.</p>
+            <h2 class="slogan">We guide and<br>care for your trip</h2>
+            <a href="#" class="btn explore-btn">EXPLORE</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="{{ asset('templates/security/login.js') }}"></script>
+    <meta name="google-signin-client_id" content="511726290722-40jvb5tcng5af99i1thf6gbgado4nae6.apps.googleusercontent.com">
+{% endblock %} 

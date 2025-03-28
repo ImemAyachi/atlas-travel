@@ -1,0 +1,16 @@
+controllers:
+  resource: ../src/Controller/
+  type: attribute
+
+app_login:
+  path: /login
+  controller: App\Controller\AuthenticationController::login
+
+app_logout:
+  path: /logout
+  controller: App\Controller\AuthenticationController::logout
+
+google_login:
+  path: /login/google
+  controller: App\Controller\AuthenticationController::googleLogin
+  methods: [POST]

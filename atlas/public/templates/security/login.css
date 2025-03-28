@@ -1,0 +1,252 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.row-container {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+.left-side {
+    width: 40%;
+    max-width: 500px;
+    padding: 30px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.right-side {
+    width: 60%;
+    position: relative;
+    background-image: url('https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+.right-side::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4));
+}
+.logo {
+    width: 80px;
+    margin-bottom: 30px;
+}
+.welcome-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 5px;
+}
+.form-group {
+    margin-bottom: 12px;
+}
+.input-group {
+    margin-bottom: 0;
+    display: flex;
+    gap: 8px;
+}
+.input-group-text {
+    background-color: #0063be;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    width: 40px;
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+.input-group-text i {
+    font-size: 1.1rem;
+}
+.form-control {
+    background-color: #f5f5f5;
+    border: 1px solid #f5f5f5;
+    border-radius: 4px;
+    height: 42px;
+    padding: 0 15px;
+    font-size: 1rem;
+    box-shadow: none;
+    outline: none;
+    transition: border-color 0.2s ease;
+    flex: 1;
+}
+.form-control:focus {
+    box-shadow: none;
+    background-color: #f5f5f5;
+    border-color: #0063be;
+    outline: none;
+}
+.form-control:hover {
+    border-color: #0063be;
+}
+.form-control::placeholder {
+    color: #888;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+.btn-signin {
+    background-color: #0063be;
+    border: none;
+    height: 42px;
+    font-weight: 500;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    width: 100%;
+}
+.btn-signin:hover, .btn-signin:focus {
+    background-color: #0052a0;
+    border: none;
+    box-shadow: none;
+}
+.forgot-link {
+    color: #0063be;
+    transition: all 0.2s ease;
+}
+.forgot-link:hover {
+    color: #0052a0;
+    text-decoration: underline !important;
+}
+.footer-text {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+.atlas-brand {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    font-size: 4rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 2px;
+    z-index: 1;
+}
+.bottom-content {
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    z-index: 1;
+}
+.tagline {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+.slogan {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 30px;
+}
+.explore-btn {
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    text-decoration: none;
+    border: 2px solid white;
+    border-radius: 30px;
+    font-weight: 600;
+    padding: 10px 40px;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+.explore-btn:hover {
+    background-color: white;
+    color: #0063be;
+    transform: translateY(-2px);
+}
+.error-message {
+    color: #dc3545;
+    font-size: 0.7rem;
+    margin-top: 1px;
+    height: 15px;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    padding-left: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.error-message.visible {
+    opacity: 1;
+}
+
+.error-message ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.error-message li {
+    display: inline;
+}
+
+.input-error {
+    border-color: #dc3545 !important;
+}
+
+/* Google Sign In Button Styles */
+.google-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: 5px;
+}
+
+.google-btn > div,
+.google-btn iframe {
+    width: 100% !important;
+}
+
+/* Add a separator line */
+.text-muted {
+    position: relative;
+    z-index: 1;
+}
+
+.text-muted::before, .text-muted::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.text-muted::before {
+    left: 0;
+}
+
+.text-muted::after {
+    right: 0;
+} 
