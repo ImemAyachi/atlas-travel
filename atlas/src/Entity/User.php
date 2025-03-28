@@ -64,6 +64,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: "adminPrivileges", type: 'text', nullable: true)]
     private ?string $adminPrivileges = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isVerified = false;
+
     private ?string $nom = null;
 
     private ?string $prenom = null;
@@ -292,5 +295,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+        return $this;
     }
 } 

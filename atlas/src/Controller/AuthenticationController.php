@@ -19,22 +19,37 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Form\UserType;
 use App\Form\LoginType;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Entity\EmailVerification;
 
 class AuthenticationController extends AbstractController
 {
     private $entityManager;
     private $tokenStorage;
+    private $mailer;
     
-    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage)
+    public function __construct(EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, MailerInterface $mailer)
     {
         $this->entityManager = $entityManager;
         $this->tokenStorage = $tokenStorage;
+        $this->mailer = $mailer;
     }
     
     #[Route('/login', name: 'app_login')]
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
+            if (!$this->getUser()->isVerified()) {
+                $this->addFlash('warning', 'Please verify your email address before accessing the dashboard.');
+                return $this->render('authentication/login.html.twig', [
+                    'last_username' => $authenticationUtils->getLastUsername(),
+                    'error' => null,
+                    'form' => $this->createForm(LoginType::class)->createView(),
+                    'fieldErrors' => ['email' => 'Please verify your email address first'],
+                ]);
+            }
             return $this->redirectToRoute('app_dashboard');
         }
 
@@ -131,6 +146,7 @@ class AuthenticationController extends AbstractController
                 $user->setRole('tourist');
                 $user->setAdresse('Please update your address');
                 $user->setAge(0);
+                $user->setIsVerified(true);
                 
                 if ($picture) {
                     $user->setProfileImage($picture);
@@ -219,6 +235,7 @@ class AuthenticationController extends AbstractController
                 $user->setSurname($firstname);
                 
                 $user->setRole('tourist');
+                $user->setIsVerified(false);
                 
                 if ($form->has('phone') && $form->get('phone')->getData()) {
                     $user->setNumTelph($form->get('phone')->getData());
@@ -245,18 +262,65 @@ class AuthenticationController extends AbstractController
                     }
                 }
                 
+                // Create verification token
+                $verificationToken = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+                $verification = new EmailVerification();
+                $verification->setEmail($user->getEmail());
+                $verification->setToken($verificationToken);
+                
                 $this->entityManager->persist($user);
+                $this->entityManager->persist($verification);
                 $this->entityManager->flush();
                 
-                $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
-                $this->tokenStorage->setToken($token);
-                
-                return $this->redirectToRoute('app_dashboard');
+                // Send verification email
+                $email = (new Email())
+                    ->from('noreply@atlas.com')
+                    ->to($user->getEmail())
+                    ->subject('Please verify your email')
+                    ->html($this->renderView('authentication/email/verification.html.twig', [
+                        'verificationUrl' => $this->generateUrl('verify_email', ['token' => $verificationToken], UrlGeneratorInterface::ABSOLUTE_URL)
+                    ]));
+
+                try {
+                    $this->mailer->send($email);
+                    $this->addFlash('success', 'Registration successful! Please check your email to verify your account.');
+                    return $this->render('authentication/verification_pending.html.twig', [
+                        'email' => $user->getEmail()
+                    ]);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Could not send verification email. Please try again or contact support.');
+                    return $this->redirectToRoute('app_register');
+                }
             }
         }
         
         return $this->render('authentication/register.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/verify/email/{token}', name: 'verify_email')]
+    public function verifyEmail(string $token): Response
+    {
+        $verification = $this->entityManager->getRepository(EmailVerification::class)->findOneBy(['token' => $token]);
+        
+        if (!$verification || $verification->isExpired()) {
+            $this->addFlash('error', 'Invalid or expired verification link.');
+            return $this->redirectToRoute('app_login');
+        }
+        
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $verification->getEmail()]);
+        
+        if (!$user) {
+            $this->addFlash('error', 'User not found.');
+            return $this->redirectToRoute('app_login');
+        }
+        
+        $user->setIsVerified(true);
+        $this->entityManager->remove($verification);
+        $this->entityManager->flush();
+        
+        $this->addFlash('success', 'Your email has been verified! You can now log in.');
+        return $this->redirectToRoute('app_login');
     }
 } 

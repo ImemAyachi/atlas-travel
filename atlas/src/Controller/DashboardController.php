@@ -19,6 +19,12 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         
+        // Check if user is verified
+        if (!$user->isVerified()) {
+            $this->addFlash('warning', 'Please verify your email address before accessing the dashboard.');
+            return $this->redirectToRoute('app_login');
+        }
+        
         $roleName = $user->getRole();
         if (empty($roleName)) {
             $user->setRole('tourist');
