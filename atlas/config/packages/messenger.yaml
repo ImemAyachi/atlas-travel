@@ -14,16 +14,21 @@ framework:
           multiplier: 2
       failed: "doctrine://default?queue_name=failed"
       # sync: 'sync://'
+      scheduled: "in-memory://"
 
     default_bus: messenger.bus.default
 
     buses:
-      messenger.bus.default: []
+      messenger.bus.default:
+        middleware:
+          - "scheduler"
 
     routing:
       # Symfony\Component\Mailer\Messenger\SendEmailMessage: async # Commented out to send emails synchronously
       Symfony\Component\Notifier\Message\ChatMessage: async
       Symfony\Component\Notifier\Message\SmsMessage: async
+      'App\Scheduler\CleanupExpiredVerificationsMessage': scheduled
+      'Symfony\Component\Scheduler\MessengerSchedulerBroker': async
 
       # Route your messages to the transports
       # 'App\Message\YourMessage': async
