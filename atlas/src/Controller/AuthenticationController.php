@@ -259,4 +259,41 @@ class AuthenticationController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/forgot-password', name: 'app_forgot_password')]
+    public function forgotPassword(Request $request): Response
+    {
+        $submitted = false;
+        $success = false;
+        $error = null;
+        
+        if ($request->isMethod('POST')) {
+            $email = $request->request->get('email');
+            $submitted = true;
+            
+            if (!$email) {
+                $error = 'Please enter your email address';
+            } else {
+                $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+                
+                if (!$user) {
+                    $error = 'No account found with this email address';
+                } else {
+                    // In a real implementation, you would:
+                    // 1. Generate a secure reset token
+                    // 2. Store it in the database with an expiration time
+                    // 3. Send an email with a link containing the token
+                    
+                    // For this demo, we'll just show a success message
+                    $success = true;
+                }
+            }
+        }
+        
+        return $this->render('authentication/forgot_password.html.twig', [
+            'submitted' => $submitted,
+            'success' => $success,
+            'error' => $error
+        ]);
+    }
 } 
