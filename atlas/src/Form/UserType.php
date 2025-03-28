@@ -129,8 +129,20 @@ class UserType extends AbstractType
                     'constraints' => [
                         new NotBlank(['message' => 'Password is required']),
                         new Length([
-                            'min' => 6,
+                            'min' => 8,
                             'minMessage' => 'Password must be at least {{ limit }} characters',
+                        ]),
+                        new Regex([
+                            'pattern' => '/[A-Z]/',
+                            'message' => 'Password must contain at least one uppercase letter',
+                        ]),
+                        new Regex([
+                            'pattern' => '/[0-9]/',
+                            'message' => 'Password must contain at least one number',
+                        ]),
+                        new Regex([
+                            'pattern' => '/[!@#$%^&*(),.?":{}|<>]/',
+                            'message' => 'Password must contain at least one special character',
                         ]),
                     ],
                 ],
